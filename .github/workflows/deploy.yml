@@ -1,8 +1,9 @@
 name: Show Kubernetes Pods and Services
+
 on:
   push:
     branches:
-      - main  
+      - main  # Adjust the branch name as needed
 
 jobs:
   check-status:
@@ -17,12 +18,11 @@ jobs:
         with:
           version: 'latest'
 
+      - name: Create kubeconfig directory
+        run: mkdir -p $HOME/.kube
+
       - name: Set KUBECONFIG
         run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
       - name: Show running pods
-        run: sudo kubectl get pods -A 
-
-      - name: Show running services
-        run: sudo kubectl get services
-
+        run: kubectl get pods -A

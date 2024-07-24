@@ -1,0 +1,28 @@
+name: Show Kubernetes Pods and Services
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  check-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up K8s
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Set KUBECONFIG
+        run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+      - name: Show running pods
+        run: sudo kubectl get pods -A 
+
+      - name: Show running services
+        run: sudo kubectl get services
+

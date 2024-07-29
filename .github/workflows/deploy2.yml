@@ -1,1 +1,30 @@
+name: Show Kubernetes Pods and Services
 
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name as needed
+
+jobs:
+  check-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up K8s
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBECONFIG_GCP }}
+        with:
+          args: get pods
+
+      - name: Create kubeconfig directory
+        run: mkdir -p $HOME/.kube
+
+      - name: Set KUBECONFIG
+        run: echo "${{ secrets.KUBECONFIG_GCP }}" > $HOME/.kube/config
+
+      - name: Show running pods
+        run: kubectl get pods -A

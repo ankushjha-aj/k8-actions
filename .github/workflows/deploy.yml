@@ -1,46 +1,22 @@
-# name: Show Kubernetes Pods and Services
+name: Show Kubernetes Pods and Services
 
-# on:
-#   push:
-#     branches:
-#       - main  # Adjust the branch name as needed
-
-# jobs:
-#   check-status:
-#     runs-on: ubuntu-latest
-
-#     steps:
-#       - name: Checkout code
-#         uses: actions/checkout@v3
-
-#       - name: Set up K8s
-#         uses: azure/setup-kubectl@v3
-#         with:
-#           version: 'latest'
-
-#       - name: Create kubeconfig directory
-#         run: mkdir -p $HOME/.kube
-
-#       - name: Set KUBECONFIG
-#         run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-
-#       - name: Show running pods
-#         run: kubectl get pods -A
-
-name: Get pods
-on: push
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name as needed
 
 jobs:
-  deploy:
-    name: Deploy
+  check-status:
     runs-on: ubuntu-latest
 
     steps:
-    
-      - uses: actions/checkout@v1
-      - uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up K8s
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
 
       - name: Create kubeconfig directory
         run: mkdir -p $HOME/.kube
@@ -48,6 +24,5 @@ jobs:
       - name: Set KUBECONFIG
         run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
-      - uses: actions-hub/kubectl@master
-        with:
-          args: get pods
+      - name: Show running pods
+        run: kubectl get pods -A

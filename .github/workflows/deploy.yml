@@ -13,6 +13,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Set up Kubernetes config
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+
       - name: Set up kubectl
         uses: actions-hub/kubectl@v1.30.3
         env:
@@ -20,11 +26,24 @@ jobs:
         with:
           args: get pods
 
-      # - name: Create kubeconfig directory
-      #   run: mkdir -p $HOME/.kube
 
-      # - name: Set KUBECONFIG
-      #   run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-
-      # - name: Show running pods
-      #   run: kubectl get pods -A
+# NEED to change the Config file in base64 with the "=" sign and add that base64 encoding in github_secrets.
+# apiVersion: v1
+# clusters:
+# - cluster:
+#     server: https://34.41.119.209:46277
+#     insecure-skip-tls-verify: true
+#   name: k3d-mycluster
+# contexts:
+# - context:
+#     cluster: k3d-mycluster
+#     user: admin@k3d-mycluster
+#   name: k3d-mycluster
+# current-context: k3d-mycluster
+# kind: Config
+# preferences: {}
+# users:
+# - name: admin@k3d-mycluster
+#   user:
+#     client-certificate-data: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJrRENDQVRlZ0F3SUJBZ0lJRVV6KytTeGRtTnN3Q2dZSUtvWkl6ajBFQXdJd0l6RWhNQjhHQTFVRUF3d1kKYXpOekxXTnNhV1Z1ZEMxallVQXhOekl4TkRZeU9UTTVNQjRYRFRJME1EY3lNREE0TURnMU9Wb1hEVEkxTURjeQpNREE0TURnMU9Wb3dNREVYTUJVR0ExVUVDaE1PYzNsemRHVnRPbTFoYzNSbGNuTXhGVEFUQmdOVkJBTVRESE41CmMzUmxiVHBoWkcxcGJqQlpNQk1HQnlxR1NNNDlBZ0VHQ0NxR1NNNDlBd0VIQTBJQUJLMm5GVEMwQ3VyVWY0WGsKVVdvcWhjWnZwNGVMTG9hRXdTWXhCMUVIR2g5TFBJWDFuekNLbWZtamE1eHkrVUxHKytBb3l5ZnFKQ2NQNm5jVwp1d3psNEltalNEQkdNQTRHQTFVZER3RUIvd1FFQXdJRm9EQVRCZ05WSFNVRUREQUtCZ2dyQmdFRkJRY0RBakFmCkJnTlZIU01FR0RBV2dCUURGUmozTmMwUU5GL1RyWjdxOXFWTjVVZy9HekFLQmdncWhrak9QUVFEQWdOSEFEQkUKQWlCTHJvZGt4NGsyTlhHTzV2RkQ5MklMWVp1dCtLeTdWU285MDNaaVltUjl0Z0lnR3U3YzJETWZoS3RQclVWQQo4Mlh2VWM3R1I4QUdzekZFSXYybi95M0owNWM9Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0KLS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUJkekNDQVIyZ0F3SUJBZ0lCQURBS0JnZ3Foa2pPUFFRREFqQWpNU0V3SHdZRFZRUUREQmhyTTNNdFkyeHAKWlc1MExXTmhRREUzTWpFME5qSTVNemt3SGhjTk1qUXdOekl3TURnd09EVTVXaGNOTXpRd056RTRNRGd3T0RVNQpXakFqTVNFd0h3WURWUVFEREJock0zTXRZMnhwWlc1MExXTmhRREUzTWpFME5qSTVNemt3V1RBVEJnY3Foa2pPClBRSUJCZ2dxaGtqT1BRTUJCd05DQUFURHBjbjBVU1hGSTc3UTFTVjU0NHdhcXB6aVhidVVJNzd4VTBqR3g3Sy8KUWZhaEIvd3BjaHI3K3ZmalJBcW5sMVgzOXVaSUswQVpUOXVid0tUcjhiK1dvMEl3UURBT0JnTlZIUThCQWY4RQpCQU1DQXFRd0R3WURWUjBUQVFIL0JBVXdBd0VCL3pBZEJnTlZIUTRFRmdRVUF4VVk5elhORURSZjA2MmU2dmFsClRlVklQeHN3Q2dZSUtvWkl6ajBFQXdJRFNBQXdSUUloQU16M0pBdzlJSlcvWjI2clIxSk43QW91c3QyQXkrNDUKeDNjYndVUThRVTI3QWlBbkpQSFF4aDRMdFRNNFUxNUxnQklaSXNzZUloVzVaMkQzQXlWaVc1c2t5UT09Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K
+#     client-key-data: LS0tLS1CRUdJTiBFQyBQUklWQVRFIEtFWS0tLS0tCk1IY0NBUUVFSUNtVkNwQ1FwcUxMMk1ycCtJZ3lmdVJWUHFUTDJ5Qy8yUHpBTGs0QWVaaElvQW9HQ0NxR1NNNDkKQXdFSG9VUURRZ0FFcmFjVk1MUUs2dFIvaGVSUmFpcUZ4bStuaDRzdWhvVEJKakVIVVFjYUgwczhoZldmTUlxWgorYU5ybkhMNVFzYjc0Q2pMSitva0p3L3FkeGE3RE9YZ2lRPT0KLS0tLS1FTkQgRUMgUFJJVkFURSBLRVktLS0tLQo=

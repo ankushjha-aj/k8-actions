@@ -15,10 +15,8 @@ jobs:
 
       - name: Set up K8s
         uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBECONFIG_GCP }}
         with:
-          args: get pods
+          version: 'latest'
 
       - name: Create kubeconfig directory
         run: mkdir -p $HOME/.kube

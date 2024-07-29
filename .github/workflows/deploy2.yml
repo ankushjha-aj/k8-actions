@@ -13,12 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - uses: actions-hub/kubectl@master
-        env:
-          KUBE_CONFIG: ${{ secrets.KUBECONFIG_GCP }}
+      - name: Set up K8s
+        uses: azure/setup-kubectl@v3
         with:
-          args: get pods
-
+          version: 'latest'
+          
       - name: Create kubeconfig directory
         run: mkdir -p $HOME/.kube
 

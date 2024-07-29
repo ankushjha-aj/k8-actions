@@ -36,14 +36,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-
-      - name: Set KUBECONFIG
-        run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
-        
+    
       - uses: actions/checkout@v1
       - uses: actions-hub/kubectl@master
         env:
           KUBE_CONFIG: ${{ secrets.KUBECONFIG }}
+
+      - name: Create kubeconfig directory
+        run: mkdir -p $HOME/.kube
+
+      - name: Set KUBECONFIG
+        run: echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
 
       - uses: actions-hub/kubectl@master
         with:

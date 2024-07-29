@@ -15,8 +15,9 @@ jobs:
 
       - name: Set up Kubernetes config
         run: |
-          mkdir -p $HOME/.kube
-          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
+          mkdir -p $HOME/kubee/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/kubee/.kube/config
+          cat $HOME/kubee/.kube/config
           chmod 600 $HOME/.kube/config
 
       - name: Set up kubectl

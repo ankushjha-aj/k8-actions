@@ -1,0 +1,27 @@
+name: Show Kubernetes Pods and Services
+on:
+  push:
+    branches:
+      - worker  # Adjust the branch name as needed
+
+jobs:
+  check-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up K8s
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'latest'
+
+      - name: Create kubeconfig directory
+        run: mkdir -p $HOME/.kube
+
+      - name: Set KUBECONFIG
+        run: echo "${{ secrets.KUBECONFIG_WORKER }}" > $HOME/.kube/config
+
+      - name: Show running pods
+        run: kubectl --kubeconfig ~/.kube/config --insecure-skip-tls-verify get pods -A
